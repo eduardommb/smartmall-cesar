@@ -11,4 +11,4 @@ A ideia de shopping se dá uma vez que nos abre um leque bem vasto de possíveis
 3. **LUIS FELIPE HIGINO MOURA**
 4. **MATHEUS GUERRA BRITTO**
 5. **ELIAN GABRIEL ANDRADE CUNHA**
-6. **PAULO ANDRÉ LOPES**
+6. **BRENO DE GODOY SANTIAGO**
