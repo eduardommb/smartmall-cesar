@@ -17,3 +17,4 @@ A ideia de shopping se dá uma vez que nos abre um leque bem vasto de possíveis
 # **Entregas**
 
 ## **Entrega 01**
+[-Link para o PDF das histórias](https://cdn.discordapp.com/attachments/1474450792898629889/1480373954962264105/documentacao_das_historias.pdf?ex=69af712e&is=69ae1fae&hm=31d3dfd1a6e9750184095e6f258ed63ad76a77729e14af8b2372173a393fa860&)
