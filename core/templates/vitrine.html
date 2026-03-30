@@ -1,55 +1,279 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <title>Shopping Virtual</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Shopping Virtual</title>
 
-    <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Fonte (opcional, deixa bem mais moderno) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg1: #0b1020;
+      --bg2: #0f172a;
+      --panel: rgba(255,255,255,.06);
+      --border: rgba(255,255,255,.14);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.72);
+      --brand: #7c3aed; /* roxo */
+      --brand2:#22c55e; /* verde */
+      --shadow: 0 18px 55px rgba(0,0,0,.45);
+      --radius: 18px;
+      --radius2: 16px;
+    }
+
+    body{
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+      min-height: 100vh;
+      background:
+        radial-gradient(900px 450px at 12% 8%, rgba(124,58,237,.30), transparent 60%),
+        radial-gradient(850px 420px at 88% 12%, rgba(34,197,94,.18), transparent 55%),
+        radial-gradient(900px 650px at 55% 105%, rgba(59,130,246,.14), transparent 60%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+    }
+
+    .page-wrap{
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 26px 14px 50px;
+    }
+
+    .hero{
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+      box-shadow: var(--shadow);
+      padding: 22px 18px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      background:
+        radial-gradient(420px 140px at 18% 0%, rgba(124,58,237,.28), transparent 60%),
+        radial-gradient(360px 160px at 82% 0%, rgba(34,197,94,.16), transparent 55%);
+      pointer-events:none;
+      opacity:.9;
+    }
+    .hero > *{ position: relative; }
+
+    .title{
+      font-weight: 800;
+      letter-spacing: .2px;
+      margin: 0;
+      font-size: 30px;
+      line-height: 1.1;
+    }
+    .subtitle{
+      margin-top: 10px;
+      color: var(--muted);
+      max-width: 70ch;
+      margin-bottom: 0;
+    }
+
+    /* Chips de categoria */
+    .chips{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 16px;
+    }
+
+    .chip{
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-weight: 700;
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.05);
+      color: var(--text);
+      transition: transform .15s ease, background .15s ease, border-color .15s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 40px;
+    }
+    .chip:hover{
+      transform: translateY(-1px);
+      background: rgba(255,255,255,.08);
+      border-color: rgba(255,255,255,.22);
+      color: var(--text);
+    }
+
+    .chip-active{
+      border-color: rgba(124,58,237,.55);
+      background: linear-gradient(135deg, rgba(124,58,237,.95), rgba(37,99,235,.78));
+      box-shadow: 0 14px 35px rgba(124,58,237,.20);
+    }
+    .chip-inactive{
+      background: rgba(255,255,255,.05);
+    }
+
+    /* Cards */
+    .shop-card{
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: var(--radius2);
+      background: rgba(255,255,255,.05);
+      box-shadow: 0 12px 35px rgba(0,0,0,.28);
+      overflow: hidden;
+      transition: transform .18s ease, background .18s ease, border-color .18s ease;
+      height: 100%;
+      position: relative;
+    }
+    .shop-card:hover{
+      transform: translateY(-3px);
+      background: rgba(255,255,255,.07);
+      border-color: rgba(255,255,255,.22);
+    }
+    .shop-card::before{
+      content:"";
+      position:absolute;
+      inset: 0;
+      background:
+        radial-gradient(220px 90px at 20% 0%, rgba(124,58,237,.20), transparent 60%),
+        radial-gradient(220px 90px at 80% 0%, rgba(34,197,94,.12), transparent 60%);
+      pointer-events:none;
+      opacity:.75;
+    }
+
+    .shop-card-body{
+      padding: 18px 16px;
+      position: relative;
+    }
+
+    .shop-badge{
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .shop-name{
+      font-weight: 800;
+      font-size: 18px;
+      margin: 10px 0 6px;
+    }
+
+    .shop-meta{
+      color: var(--muted);
+      margin: 0;
+      font-size: 14px;
+    }
+
+    .section-head{
+      display:flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 18px 2px 10px;
+    }
+    .section-head h2{
+      font-size: 16px;
+      margin: 0;
+      color: rgba(255,255,255,.90);
+      font-weight: 800;
+    }
+    .section-head .count{
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .empty{
+      border: 1px dashed rgba(255,255,255,.20);
+      background: rgba(255,255,255,.03);
+      color: var(--muted);
+      border-radius: var(--radius2);
+      padding: 16px;
+      text-align: center;
+    }
+
+    /* Melhor contraste do Bootstrap */
+    .text-muted{ color: var(--muted) !important; }
+
+    @media (max-width: 576px){
+      .title{ font-size: 24px; }
+      .hero{ padding: 18px 14px; }
+    }
+  </style>
 </head>
+
 <body>
+  <div class="page-wrap">
 
-<div class="container mt-4">
+    <header class="hero">
+      <div class="text-center">
+        <h1 class="title">Shopping Virtual</h1>
+        <p class="subtitle">
+          Selecione uma categoria para filtrar as lojas e encontrar o que você precisa.
+        </p>
 
-    <h1 class="text-center mb-4">🛍️ Shopping Virtual</h1>
-
-    <!-- Categorias -->
-    <div class="mb-4 text-center">
-        
-        <!-- Botão Todas -->
-        <a href="?" 
-           class="btn {% if not request.GET.categoria %}btn-dark{% else %}btn-secondary{% endif %} m-1">
+        <!-- Categorias -->
+        <nav class="chips" aria-label="Categorias">
+          <!-- Botão Todas -->
+          <a
+            href="?"
+            class="chip {% if not request.GET.categoria %}chip-active{% else %}chip-inactive{% endif %}"
+          >
             Todas
-        </a>
+          </a>
 
-        <!-- Botões das categorias -->
-        {% for categoria in categorias %}
-            <a href="?categoria={{ categoria.id }}" 
-               class="btn {% if request.GET.categoria == categoria.id|stringformat:'s' %}btn-dark{% else %}btn-primary{% endif %} m-1">
-                {{ categoria.nome }}
+          <!-- Botões das categorias -->
+          {% for categoria in categorias %}
+            <a
+              href="?categoria={{ categoria.id }}"
+              class="chip {% if request.GET.categoria == categoria.id|stringformat:'s' %}chip-active{% else %}chip-inactive{% endif %}"
+            >
+              {{ categoria.nome }}
             </a>
-        {% endfor %}
+          {% endfor %}
+        </nav>
+      </div>
+    </header>
+
+    <div class="section-head">
+      <h2>Vitrine de Lojas</h2>
+      <div class="count">
+        {% if lojas %}{{ lojas|length }} loja(s){% else %}0 loja(s){% endif %}
+      </div>
     </div>
 
     <!-- Lojas -->
-    <div class="row">
-        {% for loja in lojas %}
-            <div class="col-md-4 mb-4">
-                <div class="card shadow-sm">
-                    <div class="card-body text-center">
-                        <h5 class="card-title">{{ loja.nome }}</h5>
-                        <p class="card-text text-muted">
-                            Categoria: {{ loja.categoria.nome }}
-                        </p>
-                    </div>
-                </div>
+    <div class="row g-3">
+      {% for loja in lojas %}
+        <div class="col-12 col-sm-6 col-lg-4">
+          <div class="shop-card">
+            <div class="shop-card-body text-center">
+              <span class="shop-badge">🛍️ Loja</span>
+              <div class="shop-name">{{ loja.nome }}</div>
+              <p class="shop-meta">
+                Categoria: <strong>{{ loja.categoria.nome }}</strong>
+              </p>
             </div>
-        {% empty %}
-            <p class="text-center">Nenhuma loja encontrada</p>
-        {% endfor %}
+          </div>
+        </div>
+      {% empty %}
+        <div class="col-12">
+          <div class="empty">Nenhuma loja encontrada</div>
+        </div>
+      {% endfor %}
     </div>
 
-</div>
-
+  </div>
 </body>
 </html>
