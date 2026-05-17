@@ -133,7 +133,9 @@ A ideia de shopping se dá uma vez que nos abre um leque bem vasto de possíveis
 🔗 [Link para o Backlog](https://matheus-guerra-britto.atlassian.net/jira/software/projects/PF/boards/34/backlog?epics=visible)
 
 - **Print do Backlog e do Quadro do Jira**\
-  <!-- Adicionar aqui os prints atualizados do backlog e do quadro da Entrega 04. -->
+  <img width="1849" height="1025" alt="Image" src="https://github.com/user-attachments/assets/3058a4da-3c0b-4fa1-bbe3-3d024fd42d69" />\
+  <img width="1856" height="1035" alt="Image" src="https://github.com/user-attachments/assets/50674dbc-eb6b-44f4-9e2a-fdbc304a3e77" />
+
 
 ### 🐛 Controle de Issues
 - **Issue/Bug Tracker do GitHub Atualizado:**\
