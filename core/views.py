@@ -1,16 +1,21 @@
+from collections import Counter
+from decimal import Decimal
+
 from django.contrib import messages
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView
+from django.db import transaction
 from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.crypto import get_random_string
+from django.views.decorators.http import require_POST
 
 from .forms import LojaForm, LojistaRegistrationForm, ProdutoForm
-from .models import Categoria, Loja, Produto
+from .models import Categoria, ItemPedido, Loja, Pedido, Produto
 
 
 class CustomLoginView(LoginView):
@@ -395,32 +400,150 @@ def detalhe_loja(request, loja_id):
 
 
 def carrinho(request):
-    carrinho = request.session.get('carrinho', [])
+    carrinho_ids = request.session.get("carrinho", [])
+    itens, total = _resumo_carrinho(carrinho_ids)
 
-    produtos = Produto.objects.filter(id__in=carrinho)
-
-    return render(request, 'core/public/carrinho.html', {
-        'produtos': produtos
-    })
+    return render(
+        request,
+        "core/public/carrinho.html",
+        {
+            "itens": itens,
+            "total": total,
+        },
+    )
 
 
 def adicionar_carrinho(request, produto_id):
     produto = get_object_or_404(Produto, id=produto_id)
 
-    carrinho = request.session.get('carrinho', [])
+    carrinho = request.session.get("carrinho", [])
 
     carrinho.append(produto.id)
 
-    request.session['carrinho'] = carrinho
+    request.session["carrinho"] = carrinho
 
-    return redirect('carrinho')
+    return redirect("carrinho")
 
+
+@require_POST
 def remover_carrinho(request, produto_id):
-    carrinho = request.session.get('carrinho', [])
+    carrinho = request.session.get("carrinho", [])
 
     if produto_id in carrinho:
         carrinho.remove(produto_id)
 
-    request.session['carrinho'] = carrinho
+    request.session["carrinho"] = carrinho
 
-    return redirect('carrinho')
+    return redirect("carrinho")
+
+
+def _resumo_carrinho(carrinho_ids):
+    contagem = Counter(carrinho_ids)
+    produtos_por_id = Produto.objects.in_bulk(contagem.keys())
+    itens = []
+    total = Decimal("0.00")
+
+    for produto_id, quantidade in contagem.items():
+        produto = produtos_por_id.get(produto_id)
+        if not produto:
+            continue
+        subtotal = produto.preco * quantidade
+        total += subtotal
+        itens.append(
+            {
+                "produto": produto,
+                "quantidade": quantidade,
+                "subtotal": subtotal,
+            }
+        )
+
+    itens.sort(key=lambda item: item["produto"].nome.lower())
+    return itens, total
+
+
+@login_required
+def checkout(request):
+    carrinho_ids = request.session.get("carrinho", [])
+    itens, total = _resumo_carrinho(carrinho_ids)
+
+    if not itens:
+        messages.info(request, "Seu carrinho está vazio.")
+        return redirect("carrinho")
+
+    return render(
+        request,
+        "core/public/checkout.html",
+        {
+            "itens": itens,
+            "total": total,
+            "tipo_entrega_padrao": Pedido.TipoEntrega.RETIRADA,
+        },
+    )
+
+
+@login_required
+@require_POST
+def finalizar_pedido(request):
+    carrinho_ids = request.session.get("carrinho", [])
+    if not carrinho_ids:
+        messages.info(request, "Seu carrinho está vazio.")
+        return redirect("carrinho")
+
+    tipo_entrega = request.POST.get("tipo_entrega", Pedido.TipoEntrega.RETIRADA)
+    if tipo_entrega != Pedido.TipoEntrega.RETIRADA:
+        messages.error(request, "Tipo de entrega inválido.")
+        return redirect("checkout")
+
+    with transaction.atomic():
+        contagem = Counter(carrinho_ids)
+        produtos = Produto.objects.select_for_update().in_bulk(contagem.keys())
+
+        if len(produtos) != len(contagem):
+            messages.error(request, "Há produtos indisponíveis no carrinho.")
+            return redirect("carrinho")
+
+        for produto_id, quantidade in contagem.items():
+            produto = produtos[produto_id]
+            if produto.estoque < quantidade:
+                messages.error(
+                    request,
+                    f"Estoque insuficiente para {produto.nome}. Disponível: {produto.estoque}.",
+                )
+                return redirect("checkout")
+
+        pedido = Pedido.objects.create(usuario=request.user, tipo_entrega=tipo_entrega)
+        itens_pedido = []
+
+        for produto_id, quantidade in contagem.items():
+            produto = produtos[produto_id]
+            itens_pedido.append(
+                ItemPedido(
+                    pedido=pedido,
+                    produto=produto,
+                    quantidade=quantidade,
+                    preco_unitario=produto.preco,
+                )
+            )
+            produto.estoque -= quantidade
+            produto.save(update_fields=["estoque"])
+
+        ItemPedido.objects.bulk_create(itens_pedido)
+
+    request.session["carrinho"] = []
+    messages.success(request, f"Pedido #{pedido.id} finalizado com sucesso!")
+    return redirect("pedido_confirmacao", pedido_id=pedido.id)
+
+
+@login_required
+def pedido_confirmacao(request, pedido_id):
+    pedido = get_object_or_404(
+        Pedido.objects.select_related("usuario").prefetch_related("itens__produto"),
+        id=pedido_id,
+        usuario=request.user,
+    )
+    total = sum((item.preco_unitario * item.quantidade for item in pedido.itens.all()), Decimal("0.00"))
+    return render(
+        request,
+        "core/public/pedido_confirmacao.html",
+        {"pedido": pedido, "total": total},
+    )

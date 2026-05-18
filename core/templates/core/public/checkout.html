@@ -1,0 +1,77 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %}Checkout - SmartMall{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'core/css/pages/public.css' %}" />
+{% endblock %}
+
+{% block content %}
+<div class="page-shell">
+    <header class="site-header site-header--light public-header cart-header">
+        <a class="brand" href="{% url 'home' %}">Smart<span>Mall</span></a>
+        <nav class="nav-menu">
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'vitrine' %}">Vitrine</a>
+            <a href="{% url 'carrinho' %}">Carrinho</a>
+            <a href="{% url 'logout' %}">Sair</a>
+        </nav>
+    </header>
+
+    <main class="cart-page">
+        {% if messages %}
+        <section aria-label="Mensagens">
+            {% for message in messages %}
+            <div class="message">{{ message }}</div>
+            {% endfor %}
+        </section>
+        {% endif %}
+
+        <section class="cart-heading">
+            <div>
+                <h1>Checkout</h1>
+                <p>Revise os itens e finalize seu pedido.</p>
+            </div>
+        </section>
+
+        <section class="panel">
+            <h2>Forma de recebimento</h2>
+            <form method="post" action="{% url 'finalizar_pedido' %}">
+                {% csrf_token %}
+                <label>
+                    <input
+                        type="radio"
+                        name="tipo_entrega"
+                        value="RETIRADA"
+                        checked
+                    />
+                    Retirada no Shopping
+                </label>
+
+                <section class="cart-list" aria-label="Resumo dos itens">
+                    {% for item in itens %}
+                    <article class="cart-item">
+                        <div class="cart-item-info">
+                            <h2>{{ item.produto.nome }}</h2>
+                            <p class="meta">Quantidade: {{ item.quantidade }}</p>
+                            <p class="cart-item-price">Subtotal: R$ {{ item.subtotal }}</p>
+                        </div>
+                    </article>
+                    {% endfor %}
+                </section>
+
+                <p class="cart-item-price">Total: R$ {{ total }}</p>
+                <div class="actions">
+                    <button type="submit" class="btn">Finalizar pedido</button>
+                    <a href="{% url 'carrinho' %}" class="btn btn-muted">Voltar ao carrinho</a>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <footer class="page-footer">
+        <div>© SmartMall</div>
+    </footer>
+</div>
+{% endblock %}
