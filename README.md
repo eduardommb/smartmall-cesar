@@ -37,6 +37,39 @@ A ideia de shopping se dá uma vez que nos abre um leque bem vasto de possíveis
 
 </details>
 
+## Checkout (História 7) - Como rodar localmente
+
+1. Instale as dependências:
+   ```bash
+   pip install -r requirements.txt
+   ```
+2. Aplique as migrations (incluindo `0007_pedido_itempedido`):
+   ```bash
+   python manage.py migrate
+   ```
+3. Inicie o servidor:
+   ```bash
+   python manage.py runserver
+   ```
+
+### Testes unitários do checkout
+
+```bash
+python manage.py test core.tests.test_checkout
+```
+
+### Fluxo manual de checkout
+
+1. Faça login com um usuário.
+2. Adicione produtos ao carrinho pela tela da loja.
+3. Acesse `/carrinho/` e clique em **Ir para Checkout**.
+4. Em `/checkout/`, confirme **Retirada no Shopping** e clique em **Finalizar pedido**.
+5. Verifique a tela de confirmação em `/pedido/confirmacao/<id>/`.
+6. Confira no banco/admin:
+   - criação de `Pedido` e `ItemPedido`;
+   - baixa do `Produto.estoque`;
+   - carrinho da sessão limpo.
+
 <details>
 <summary><strong>💻 Entrega 02 - Primeiras Implementações</strong></summary>
 
