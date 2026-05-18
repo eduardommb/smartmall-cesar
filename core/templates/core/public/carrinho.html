@@ -104,7 +104,13 @@
             <div>
                 <span class="cart-summary-label">Resumo do pedido</span>
                 <h2>Total: R$ {{ total }}</h2>
-                <p>{{ quantidade_total }} item{% if quantidade_total != 1 %}s{% endif %} no carrinho</p>
+                <p>
+                    {% if quantidade_total == 1 %}
+                    1 item no carrinho
+                    {% else %}
+                    {{ quantidade_total }} itens no carrinho
+                    {% endif %}
+                </p>
             </div>
             <div class="actions cart-summary-actions">
                 <a href="{% url 'vitrine' %}" class="btn btn-secondary">Continuar comprando</a>
