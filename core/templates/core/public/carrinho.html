@@ -60,12 +60,6 @@
                 <h1>Meu Carrinho</h1>
                 <p>Confira os produtos escolhidos antes de finalizar sua compra.</p>
             </div>
-            <div class="actions">
-                <a href="{% url 'vitrine' %}" class="btn btn-secondary">Continuar comprando</a>
-                {% if itens %}
-                <a href="{% url 'checkout' %}" class="btn">Finalizar compra</a>
-                {% endif %}
-            </div>
         </section>
 
         {% if itens %}
