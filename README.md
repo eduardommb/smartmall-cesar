@@ -138,7 +138,7 @@ A ideia de shopping se dá uma vez que nos abre um leque bem vasto de possíveis
 
 
 ### 🐛 Controle de Issues
-- **Issue/Bug Tracker do GitHub Atualizado:**\
+- **Issue/Bug Tracker do GitHub Atualizado:**
 <img width="1265" height="763" alt="image" src="https://github.com/user-attachments/assets/a275e694-e345-4ea7-aa18-22e75434b70f" />
 
 
