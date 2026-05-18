@@ -47,6 +47,20 @@ class CheckoutTests(TestCase):
         messages = [m.message for m in get_messages(response.wsgi_request)]
         self.assertIn("Seu carrinho está vazio.", messages)
 
+    def test_carrinho_com_item_exibe_trilha_e_acao_de_checkout(self):
+        self._set_carrinho([self.produto.id, self.produto.id])
+
+        response = self.client.get(reverse("carrinho"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Carrinho")
+        self.assertContains(response, "Checkout")
+        self.assertContains(response, "Confirmação")
+        self.assertContains(response, "Resumo do pedido")
+        self.assertContains(response, "2 itens no carrinho")
+        self.assertContains(response, f'href="{reverse("checkout")}"')
+        self.assertContains(response, "Finalizar compra")
+
     def test_finalizar_pedido_cria_pedido_baixa_estoque_e_limpa_carrinho(self):
         self.client.login(username="cliente", password="senha12345")
         self._set_carrinho([self.produto.id, self.produto.id])

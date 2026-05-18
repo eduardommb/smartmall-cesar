@@ -38,15 +38,27 @@
         </section>
         {% endif %}
 
+        <nav class="checkout-steps" aria-label="Etapas do pedido">
+            <span class="checkout-step checkout-step--active">Carrinho</span>
+            <span class="checkout-step-separator">&rsaquo;</span>
+            {% if itens %}
+            <a class="checkout-step" href="{% url 'checkout' %}">Checkout</a>
+            {% else %}
+            <span class="checkout-step checkout-step--disabled">Checkout</span>
+            {% endif %}
+            <span class="checkout-step-separator">&rsaquo;</span>
+            <span class="checkout-step checkout-step--disabled">Confirmação</span>
+        </nav>
+
         <section class="cart-heading">
             <div>
                 <h1>Meu Carrinho</h1>
-                <p>Confira os produtos escolhidos antes de continuar navegando.</p>
+                <p>Confira os produtos escolhidos antes de finalizar sua compra.</p>
             </div>
             <div class="actions">
                 <a href="{% url 'vitrine' %}" class="btn btn-secondary">Continuar comprando</a>
                 {% if itens %}
-                <a href="{% url 'checkout' %}" class="btn">Ir para Checkout</a>
+                <a href="{% url 'checkout' %}" class="btn">Finalizar compra</a>
                 {% endif %}
             </div>
         </section>
@@ -83,8 +95,16 @@
             </article>
             {% endfor %}
         </section>
-        <section class="panel">
-            <h2>Total: R$ {{ total }}</h2>
+        <section class="cart-summary" aria-label="Resumo do carrinho">
+            <div>
+                <span class="cart-summary-label">Resumo do pedido</span>
+                <h2>Total: R$ {{ total }}</h2>
+                <p>{{ quantidade_total }} item{% if quantidade_total != 1 %}s{% endif %} no carrinho</p>
+            </div>
+            <div class="actions cart-summary-actions">
+                <a href="{% url 'vitrine' %}" class="btn btn-secondary">Continuar comprando</a>
+                <a href="{% url 'checkout' %}" class="btn">Finalizar compra</a>
+            </div>
         </section>
         {% else %}
         <section class="cart-empty">

@@ -130,6 +130,40 @@
     margin: 36px auto 48px;
 }
 
+.checkout-steps {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+    color: #56616f;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.checkout-step {
+    padding: 8px 12px;
+    border: 1px solid #dde3ea;
+    border-radius: 999px;
+    background: #fff;
+    color: #0b2a5a;
+    text-decoration: none;
+}
+
+.checkout-step--active {
+    border-color: #ff7a00;
+    background: #fff4e8;
+    color: #ff7a00;
+}
+
+.checkout-step--disabled {
+    color: #7f8a99;
+}
+
+.checkout-step-separator {
+    color: #9aa6b5;
+    font-size: 18px;
+}
+
 .cart-heading {
     display: flex;
     align-items: center;
@@ -148,6 +182,12 @@
 .cart-heading p {
     margin: 8px 0 0;
     color: #56616f;
+}
+
+.cart-heading .actions .btn,
+.cart-summary-actions .btn {
+    color: #fff;
+    text-decoration: none;
 }
 
 .cart-list {
@@ -195,6 +235,41 @@
     color: #ff7a00;
     font-size: 18px;
     font-weight: 800;
+}
+
+.cart-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-top: 18px;
+    padding: 24px;
+    border: 1px solid #dde3ea;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 8px 18px rgba(11, 42, 90, 0.06);
+}
+
+.cart-summary-label {
+    color: #56616f;
+    font-size: 13px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.cart-summary h2 {
+    margin: 6px 0;
+    color: #0b2a5a;
+    font-size: 28px;
+}
+
+.cart-summary p {
+    margin: 0;
+    color: #56616f;
+}
+
+.cart-summary-actions {
+    justify-content: flex-end;
 }
 
 .cart-empty {
@@ -625,6 +700,16 @@
         flex-direction: column;
     }
 
+    .checkout-steps {
+        gap: 6px;
+        overflow-x: auto;
+        padding-bottom: 4px;
+    }
+
+    .checkout-step {
+        white-space: nowrap;
+    }
+
     .cart-heading h1 {
         font-size: 32px;
     }
@@ -640,6 +725,20 @@
     .cart-item .btn {
         grid-column: 1 / -1;
         justify-self: flex-start;
+    }
+
+    .cart-summary {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .cart-summary-actions {
+        width: 100%;
+    }
+
+    .cart-summary-actions .btn {
+        width: 100%;
+        text-align: center;
     }
 
     .page-title {

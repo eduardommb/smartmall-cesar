@@ -19,6 +19,14 @@
     </header>
 
     <main class="cart-page">
+        <nav class="checkout-steps" aria-label="Etapas do pedido">
+            <a class="checkout-step" href="{% url 'carrinho' %}">Carrinho</a>
+            <span class="checkout-step-separator">&rsaquo;</span>
+            <span class="checkout-step">Checkout</span>
+            <span class="checkout-step-separator">&rsaquo;</span>
+            <span class="checkout-step checkout-step--active">Confirmação</span>
+        </nav>
+
         <section class="panel">
             <h1>Pedido confirmado!</h1>
             <p>Número do pedido: <strong>#{{ pedido.id }}</strong></p>

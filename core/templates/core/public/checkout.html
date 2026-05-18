@@ -28,6 +28,14 @@
         </section>
         {% endif %}
 
+        <nav class="checkout-steps" aria-label="Etapas do pedido">
+            <a class="checkout-step" href="{% url 'carrinho' %}">Carrinho</a>
+            <span class="checkout-step-separator">&rsaquo;</span>
+            <span class="checkout-step checkout-step--active">Checkout</span>
+            <span class="checkout-step-separator">&rsaquo;</span>
+            <span class="checkout-step checkout-step--disabled">Confirmação</span>
+        </nav>
+
         <section class="cart-heading">
             <div>
                 <h1>Checkout</h1>

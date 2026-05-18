@@ -402,6 +402,7 @@ def detalhe_loja(request, loja_id):
 def carrinho(request):
     carrinho_ids = request.session.get("carrinho", [])
     itens, total = _resumo_carrinho(carrinho_ids)
+    quantidade_total = sum(item["quantidade"] for item in itens)
 
     return render(
         request,
@@ -409,6 +410,7 @@ def carrinho(request):
         {
             "itens": itens,
             "total": total,
+            "quantidade_total": quantidade_total,
         },
     )
 
