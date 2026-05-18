@@ -14,7 +14,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.crypto import get_random_string
 from django.views.decorators.http import require_POST
 
-from .forms import LojaForm, LojistaRegistrationForm, ProdutoForm
+from .forms import ClienteRegistrationForm, LojaForm, LojistaRegistrationForm, ProdutoForm
 from .models import Categoria, ItemPedido, Loja, Pedido, Produto
 
 
@@ -437,6 +437,27 @@ def remover_carrinho(request, produto_id):
     request.session["carrinho"] = carrinho
 
     return redirect("carrinho")
+
+
+def registrar_cliente(request):
+    if request.method == "POST":
+        form = ClienteRegistrationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            username = form.cleaned_data.get("username")
+            messages.success(
+                request, f"Conta criada com sucesso! Bem-vindo, {username}."
+            )
+            # Faz login automaticamente após o registro (usando o auth_login que já está importado)
+            auth_login(request, user)
+            # Redireciona direto para a vitrine
+            return redirect("vitrine")
+    else:
+        # Se for só um acesso normal à página, mostra o formulário vazio
+        form = ClienteRegistrationForm()
+
+    # Aponta para o arquivo HTML que vamos criar
+    return render(request, "registration/registro_cliente.html", {"form": form})
 
 
 def _resumo_carrinho(carrinho_ids):

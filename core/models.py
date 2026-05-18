@@ -65,7 +65,6 @@ class Produto(models.Model):
             return f"{self.nome} ({self.loja.nome})"
         return self.nome
 
-
 class Pedido(models.Model):
     class TipoEntrega(models.TextChoices):
         RETIRADA = "RETIRADA", "Retirada no Shopping"

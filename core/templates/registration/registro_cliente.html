@@ -1,0 +1,39 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %}Cadastro de Cliente - SmartMall{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'core/css/pages/forms.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="container">
+    <section class="form-card">
+        <h1>Crie sua Conta</h1>
+
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li class="{{ message.tags }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        {% if form.errors %}
+            <div class="messages error">Por favor, corrija os erros abaixo. (A senha pode estar muito fraca!)</div>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Cadastrar</button>
+            <div class="form-links">
+                <p>Já tem uma conta? <a href="{% url 'login' %}">Faça login aqui</a></p>
+                <p>Quer vender no SmartMall? <a href="{% url 'registrar_lojista' %}" style="font-weight: bold; color: var(--primary-color, #ff6600);">Cadastre sua Loja aqui</a></p>
+                <p><a href="{% url 'vitrine' %}">Voltar para a vitrine</a></p>
+            </div>
+        </form>
+    </section>
+</main>
+{% endblock %}
