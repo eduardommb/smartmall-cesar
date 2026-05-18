@@ -144,7 +144,7 @@ A ideia de shopping se dá uma vez que nos abre um leque bem vasto de possíveis
 ### 🎥 Apresentação
 - **Screen Cast:**\
 🔗 [Link para o screen cast da pipeline CI/CD](https://youtu.be/XdiKp7lqV4I)\
-🔗 [Link para o screen cast de novas funcionalidades](INSERIR_LINK_NOVAS_FUNCIONALIDADES)\
+🔗 [Link para o screen cast de novas funcionalidades](https://youtu.be/4yHLWxg4nV8)\
 🔗 [Link para o screen cast dos testes automatizados](https://youtu.be/yQhORO_eMUo)
 
 ### 📋 Documentação
