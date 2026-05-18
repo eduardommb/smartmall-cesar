@@ -98,3 +98,38 @@ class ItemPedido(models.Model):
         # Vai mostrar algo como "2x Camiseta Preta (Pedido #15)"
         nome_produto = self.produto.nome if self.produto else "Produto Removido"
         return f"{self.quantidade}x {nome_produto} (Pedido #{self.pedido.id})"
+
+class Pedido(models.Model):
+    class TipoEntrega(models.TextChoices):
+        RETIRADA = "RETIRADA", "Retirada no Shopping"
+
+    usuario = models.ForeignKey(User, on_delete=models.PROTECT, related_name="pedidos")
+    tipo_entrega = models.CharField(
+        "Tipo de entrega",
+        max_length=20,
+        choices=TipoEntrega.choices,
+        default=TipoEntrega.RETIRADA,
+    )
+    criado_em = models.DateTimeField("Criado em", auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Pedido"
+        verbose_name_plural = "Pedidos"
+        ordering = ["-criado_em"]
+
+    def __str__(self):
+        return f"Pedido #{self.pk}"
+
+
+class ItemPedido(models.Model):
+    pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, related_name="itens")
+    produto = models.ForeignKey(Produto, on_delete=models.PROTECT, related_name="+")
+    quantidade = models.PositiveIntegerField("Quantidade")
+    preco_unitario = models.DecimalField("Preço unitário", max_digits=10, decimal_places=2)
+
+    class Meta:
+        verbose_name = "Item do pedido"
+        verbose_name_plural = "Itens do pedido"
+
+    def __str__(self):
+        return f"{self.quantidade}x {self.produto.nome}"

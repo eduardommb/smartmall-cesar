@@ -35,41 +35,56 @@
     </header>
 
     <main class="cart-page">
+        {% if messages %}
+        <section aria-label="Mensagens">
+            {% for message in messages %}
+            <div class="message">{{ message }}</div>
+            {% endfor %}
+        </section>
+        {% endif %}
+
         <section class="cart-heading">
             <div>
                 <h1>Meu Carrinho</h1>
                 <p>Confira os produtos escolhidos antes de continuar navegando.</p>
             </div>
-            <a href="{% url 'vitrine' %}" class="btn btn-secondary">Continuar comprando</a>
+            <div class="actions">
+                <a href="{% url 'vitrine' %}" class="btn btn-secondary">Continuar comprando</a>
+                {% if itens %}
+                <a href="{% url 'checkout' %}" class="btn">Ir para Checkout</a>
+                {% endif %}
+            </div>
         </section>
 
-        {% if produtos %}
+        {% if itens %}
         <section class="cart-list" aria-label="Produtos no carrinho">
-            {% for produto in produtos %}
+            {% for item in itens %}
             <article class="cart-item">
-                {% if produto.imagem %}
+                {% if item.produto.imagem %}
                 <img
-                    src="{{ produto.imagem.url }}"
+                    src="{{ item.produto.imagem.url }}"
                     class="cart-item-image"
-                    alt="Imagem do produto {{ produto.nome }}"
+                    alt="Imagem do produto {{ item.produto.nome }}"
                 />
                 {% else %}
                 <div class="cart-item-image cart-item-image--placeholder" aria-hidden="true">
-                    {{ produto.nome|slice:":1" }}
+                    {{ item.produto.nome|slice:":1" }}
                 </div>
                 {% endif %}
 
                 <div class="cart-item-info">
-                    <h2>{{ produto.nome }}</h2>
-                    {% if produto.loja %}
-                    <p class="meta">Loja: {{ produto.loja.nome }}</p>
+                    <h2>{{ item.produto.nome }}</h2>
+                    {% if item.produto.loja %}
+                    <p class="meta">Loja: {{ item.produto.loja.nome }}</p>
                     {% endif %}
-                    <p class="cart-item-price">R$ {{ produto.preco }}</p>
+                    <p class="meta">Quantidade: {{ item.quantidade }}</p>
+                    <p class="cart-item-price">Subtotal: R$ {{ item.subtotal }}</p>
                 </div>
 
-                <a href="{% url 'remover_carrinho' produto.id %}" class="btn btn-danger btn-small">
-                    Remover
-                </a>
+                <form method="post" action="{% url 'remover_carrinho' item.produto.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger btn-small">Remover 1</button>
+                </form>
             </article>
             {% endfor %}
         </section>
@@ -80,6 +95,9 @@
             </a>
         </section>
 
+        <section class="panel">
+            <h2>Total: R$ {{ total }}</h2>
+        </section>
         {% else %}
         <section class="cart-empty">
             <h2>Seu carrinho está vazio</h2>

@@ -1,0 +1,45 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %}Pedido Confirmado - SmartMall{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'core/css/pages/public.css' %}" />
+{% endblock %}
+
+{% block content %}
+<div class="page-shell">
+    <header class="site-header site-header--light public-header cart-header">
+        <a class="brand" href="{% url 'home' %}">Smart<span>Mall</span></a>
+        <nav class="nav-menu">
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'vitrine' %}">Vitrine</a>
+            <a href="{% url 'carrinho' %}">Carrinho</a>
+        </nav>
+    </header>
+
+    <main class="cart-page">
+        <section class="panel">
+            <h1>Pedido confirmado!</h1>
+            <p>Número do pedido: <strong>#{{ pedido.id }}</strong></p>
+            <p>Tipo de entrega: {{ pedido.get_tipo_entrega_display }}</p>
+            <p>Data: {{ pedido.criado_em }}</p>
+        </section>
+
+        <section class="panel">
+            <h2>Itens</h2>
+            {% for item in pedido.itens.all %}
+            <p>
+                {{ item.produto.nome }} — {{ item.quantidade }}x — R$ {{ item.preco_unitario }}
+            </p>
+            {% endfor %}
+            <p class="cart-item-price">Total: R$ {{ total }}</p>
+            <a href="{% url 'vitrine' %}" class="btn btn-secondary">Voltar para vitrine</a>
+        </section>
+    </main>
+
+    <footer class="page-footer">
+        <div>© SmartMall</div>
+    </footer>
+</div>
+{% endblock %}

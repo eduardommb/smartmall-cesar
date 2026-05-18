@@ -18,6 +18,11 @@ urlpatterns = [
     
     # Finalizar Pedido
     path('carrinho/finalizar/', views.finalizar_pedido, name='finalizar_pedido'),
+    path('carrinho/adicionar/<int:produto_id>/',views.adicionar_carrinho,name='adicionar_carrinho'),
+    path('carrinho/remover/<int:produto_id>/',views.remover_carrinho,name='remover_carrinho'),
+    path('checkout/', views.checkout, name='checkout'),
+    path('checkout/finalizar/', views.finalizar_pedido, name='finalizar_pedido'),
+    path('pedido/confirmacao/<int:pedido_id>/', views.pedido_confirmacao, name='pedido_confirmacao'),
     
     # Dashboard do Lojista
     path('lojista/', views.lojista_dashboard, name='lojista_dashboard'),
