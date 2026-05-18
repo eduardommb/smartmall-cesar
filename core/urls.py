@@ -9,13 +9,15 @@ urlpatterns = [
     path('login/', views.CustomLoginView.as_view(template_name='registration/login.html'), name='login'),
     path('logout/', views.logout_view, name='logout'),
     path('registro-lojista/', views.registrar_lojista, name='registrar_lojista'),
+    path('registro-cliente/', views.registrar_cliente, name='registrar_cliente'), # Rota que criamos antes
     
     # Vitrine pública
     path('vitrine/', views.vitrine, name='vitrine'),
     path('carrinho/', views.carrinho, name='carrinho'),
-    path('carrinho/', views.carrinho, name='carrinho'),
-    path('carrinho/adicionar/<int:produto_id>/',views.adicionar_carrinho,name='adicionar_carrinho'),
-    path('carrinho/remover/<int:produto_id>/',views.remover_carrinho,name='remover_carrinho'),
+    path('carrinho/adicionar/<int:produto_id>/', views.adicionar_carrinho, name='adicionar_carrinho'),
+    
+    # Finalizar Pedido
+    path('carrinho/finalizar/', views.finalizar_pedido, name='finalizar_pedido'),
     
     # Dashboard do Lojista
     path('lojista/', views.lojista_dashboard, name='lojista_dashboard'),

@@ -23,17 +23,27 @@ Vitrine{% endblock %} {% block extra_css %}
         </div>
 
         <nav class="nav-menu">
-            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'vitrine' %}">Home</a>
             <a href="{% url 'carrinho' %}">Carrinho</a>
-            {% if user.is_authenticated %} {% if user.is_staff %}
-            <a href="{% url 'admin_dashboard' %}">Meu Painel</a>
-            {% elif user.loja %}
-            <a href="{% url 'lojista_dashboard' %}">Minha Loja</a>
-            {% endif %}
-            <a href="{% url 'logout' %}">Sair</a>
+
+            {% if user.is_authenticated %}
+                {% if user.is_staff %}
+                    <a href="{% url 'admin_dashboard' %}">Meu Painel Admin</a>
+                
+                {% elif user.loja %}
+                    <a href="{% url 'lojista_dashboard' %}">Minha Loja</a>
+                
+                {% else %}
+                    <span class="greeting" style="font-weight: 600; color: #555;">Olá, {{ user.first_name|default:user.username }}!</span>
+                    
+                    <a href="#">Meus Pedidos</a> 
+                {% endif %}
+                
+                <a href="{% url 'logout' %}">Sair</a>
+
             {% else %}
-            <a href="{% url 'login' %}">Login</a>
-            <a href="{% url 'registrar_lojista' %}">Cadastre-se</a>
+                <a href="{% url 'login' %}">Entrar</a>
+                <a href="{% url 'registrar_cliente' %}" class="btn btn-small" style="color: #ffffff;">Cadastrar-se</a>
             {% endif %}
         </nav>
     </header>

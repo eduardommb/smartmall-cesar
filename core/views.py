@@ -9,8 +9,8 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.crypto import get_random_string
 
-from .forms import LojaForm, LojistaRegistrationForm, ProdutoForm
-from .models import Categoria, Loja, Produto
+from .forms import LojaForm, LojistaRegistrationForm, ProdutoForm, ClienteRegistrationForm
+from .models import Categoria, Loja, Produto, Pedido, ItemPedido
 
 
 class CustomLoginView(LoginView):
@@ -424,3 +424,64 @@ def remover_carrinho(request, produto_id):
     request.session['carrinho'] = carrinho
 
     return redirect('carrinho')
+
+def registrar_cliente(request):
+    if request.method == "POST":
+        form = ClienteRegistrationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            username = form.cleaned_data.get("username")
+            messages.success(
+                request, f"Conta criada com sucesso! Bem-vindo, {username}."
+            )
+            # Faz login automaticamente após o registro (usando o auth_login que já está importado)
+            auth_login(request, user)
+            # Redireciona direto para a vitrine
+            return redirect("vitrine")
+    else:
+        # Se for só um acesso normal à página, mostra o formulário vazio
+        form = ClienteRegistrationForm()
+
+    # Aponta para o arquivo HTML que vamos criar
+    return render(request, "registration/registro_cliente.html", {"form": form})
+
+@login_required
+def finalizar_pedido(request):
+    # 1. Pega os IDs dos produtos que estão no carrinho da sessão
+    carrinho_ids = request.session.get('carrinho', [])
+    
+    if not carrinho_ids:
+        messages.warning(request, "Seu carrinho está vazio. Adicione produtos antes de finalizar!")
+        return redirect('vitrine')
+        
+    # 2. Busca os produtos no banco de dados com base nesses IDs
+    produtos = Produto.objects.filter(id__in=carrinho_ids)
+    
+    # 3. Calcula o valor total do pedido
+    # Usamos uma list comprehension simples para somar os preços
+    total = sum([produto.preco for produto in produtos])
+    
+    # 4. Cria a "Capa" do Pedido no banco
+    pedido = Pedido.objects.create(
+        cliente=request.user,
+        total=total,
+        status='pendente'
+    )
+    
+    # 5. Salva cada item dentro do pedido
+    for produto in produtos:
+        ItemPedido.objects.create(
+            pedido=pedido,
+            produto=produto,
+            quantidade=1,  # Como o carrinho salva IDs, assumimos 1 unidade de cada clique
+            preco_unitario=produto.preco
+        )
+        
+    # 6. Esvazia o carrinho da sessão agora que a compra foi fechada
+    request.session['carrinho'] = []
+    
+    # 7. Comemora e manda o cliente para a página de Meus Pedidos
+    messages.success(request, f"Compra finalizada com sucesso! Seu pedido é o #{pedido.id}.")
+    
+    # NOTA: Temporariamente redirecionando para a vitrine até criarmos a tela de "Meus Pedidos"
+    return redirect('vitrine')

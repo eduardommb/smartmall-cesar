@@ -101,3 +101,50 @@ class LojaForm(forms.ModelForm):
             if Loja.objects.filter(cnpj=cnpj).exists():
                 raise forms.ValidationError("CNPJ já cadastrado")
         return cnpj
+
+class ClienteRegistrationForm(UserCreationForm):
+    email = forms.EmailField(
+        label="E-mail",
+        required=True,
+        widget=forms.EmailInput(attrs={"placeholder": "seu@email.com"}),
+    )
+    first_name = forms.CharField(
+        label="Nome",
+        required=True,
+        widget=forms.TextInput(attrs={"placeholder": "Seu primeiro nome"}),
+    )
+    last_name = forms.CharField(
+        label="Sobrenome",
+        required=True,
+        widget=forms.TextInput(attrs={"placeholder": "Seu sobrenome"}),
+    )
+
+    class Meta:
+        model = User
+        # O Django já coloca as senhas automaticamente por causa do UserCreationForm
+        fields = ("username", "first_name", "last_name", "email")
+        widgets = {
+            "username": forms.TextInput(attrs={"placeholder": "Nome de usuário para login"}),
+        }
+
+    def clean_email(self):
+        # Evita que dois clientes usem o mesmo e-mail
+        email = self.cleaned_data.get("email")
+        if User.objects.filter(email=email).exists():
+            raise forms.ValidationError("Este e-mail já está em uso.")
+        return email
+
+    def save(self, commit=True):
+        # Salva as informações básicas de login
+        user = super().save(commit=False)
+        # Associa as informações extras que pedimos
+        user.email = self.cleaned_data["email"]
+        user.first_name = self.cleaned_data["first_name"]
+        user.last_name = self.cleaned_data["last_name"]
+        user.is_active = True
+        
+        if commit:
+            user.save()
+            # Note que AQUI não criamos a Loja. Ele é apenas um User comum!
+            
+        return user

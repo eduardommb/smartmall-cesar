@@ -16,15 +16,20 @@
             <a href="{% url 'home' %}">Home</a>
             <a href="{% url 'vitrine' %}">Vitrine</a>
             <a href="{% url 'carrinho' %}">Carrinho</a>
-            {% if user.is_authenticated %} {% if user.is_staff %}
-            <a href="{% url 'admin_dashboard' %}">Meu Painel</a>
-            {% elif user.loja %}
-            <a href="{% url 'lojista_dashboard' %}">Minha Loja</a>
-            {% endif %}
-            <a href="{% url 'logout' %}">Sair</a>
+            
+            {% if user.is_authenticated %} 
+                {% if user.is_staff %}
+                    <a href="{% url 'admin_dashboard' %}">Meu Painel</a>
+                {% elif user.loja %}
+                    <a href="{% url 'lojista_dashboard' %}">Minha Loja</a>
+                {% else %}
+                    <span class="greeting" style="font-weight: 600; color: #555;">Olá, {{ user.first_name|default:user.username }}!</span>
+                    <a href="#">Meus Pedidos</a>
+                {% endif %}
+                <a href="{% url 'logout' %}">Sair</a>
             {% else %}
-            <a href="{% url 'login' %}">Login</a>
-            <a href="{% url 'registrar_lojista' %}">Cadastre-se</a>
+                <a href="{% url 'login' %}">Login</a>
+                <a href="{% url 'registrar_cliente' %}" class="btn btn-small" style="color: #ffffff;">Cadastrar-se</a>
             {% endif %}
         </nav>
     </header>
@@ -68,6 +73,13 @@
             </article>
             {% endfor %}
         </section>
+
+        <section class="cart-actions" style="margin-top: 2rem; padding: 1.5rem; background-color: #f9f9f9; border-radius: 8px; display: flex; justify-content: flex-end; align-items: center;">
+            <a href="{% url 'finalizar_pedido' %}" class="btn" style="padding: 0.75rem 2.5rem; text-decoration: none; font-weight: bold;">
+                Finalizar Compra
+            </a>
+        </section>
+
         {% else %}
         <section class="cart-empty">
             <h2>Seu carrinho está vazio</h2>
